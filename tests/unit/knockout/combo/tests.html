@@ -214,6 +214,8 @@
 
 				self.isDisabled = ko.observable(false);
 
+				self.isVisible = ko.observable(true);
+
 				self.bigData = ko.observable(modelBigData);
 			}
 			ko.applyBindings(globalViewModel = new ViewModel());
@@ -243,7 +245,8 @@
 				testId_16 = '[ID16] Bug #186778 Test setting values with null',
                 testId_17 = '[ID17] Custom values should be persisted in the combo input',
 				testId_18 = '[ID18] Selected Items should be unselect after passing an empty array',
-				testId_19 = '[ID19] Selecting an item in a virtualized combo should preserve position in dropdown list'
+				testId_19 = '[ID19] Selecting an item in a virtualized combo should preserve position in dropdown list',
+				testId_20 = '[ID20] Test visibility binding'
 
 			test(testId_1, function () {
 				ok(typeof (ko.bindingHandlers.igCombo) !== 'undefined', 'igCombo extension for KnockoutJS is not loaded.');
@@ -282,7 +285,6 @@
 
 				globalViewModel.removeItem();
 				checkViewForNew(5, 0, 'name0', 0);
-
 			});
 			test(testId_10, function () {
 				var combo = $('#comboCascadingChild'),
@@ -383,6 +385,8 @@
 				}, 100);
 			});
 
+			
+
 			var testId = 'Test disabled binding';
 			test(testId, 12, function () {
 				var $combo = $("#comboDisabled"), $chk = $("#chkDisabled");
@@ -405,6 +409,40 @@
 				ok(!$combo.igCombo("comboWrapper").hasClass($.ui.igCombo.prototype.css.disabled), "Editor should be enabled");
 				$combo.remove();
 				$chk.remove();
+			});
+
+
+			test(testId_20, 9, function () { 
+				var $comboInput = $("#comboInvisibleInput"), $chkInput = $("#chkInvisibleInput");
+				var $comboDiv = $("#comboInvisibleDiv"), $chkDiv = $("#chkInvisibleDiv");
+				var $comboSpan = $("#comboInvisibleSpan"), $chkSpan = $("#chkInvisibleSpan");
+				
+				// Input placeholder
+				equal($comboInput.igCombo("comboWrapper").css("display"), "inline-block", "Editor in input should be visible");
+				$chkInput.click();
+				equal($comboInput.igCombo("comboWrapper").css("display"), "none", "Editor in input should be invisible");
+				$chkInput.click();
+				$chkInput.click();
+				equal($comboInput.igCombo("comboWrapper").css("display"), "none", "Editor in input should be invisible");
+				$chkInput.click();
+
+				// Div placeholder
+				equal($comboDiv.igCombo("comboWrapper").css("display"), "inline-block", "Editor in div should be visible");
+				$chkDiv.click();
+				equal($comboDiv.igCombo("comboWrapper").css("display"), "none", "Editor in div should be invisible");
+				$chkDiv.click();
+				$chkDiv.click();
+				equal($comboDiv.igCombo("comboWrapper").css("display"), "none", "Editor in div should be invisible");
+				$chkInput.click();
+
+				// Span placeholder
+				equal($comboSpan.igCombo("comboWrapper").css("display"), "inline-block", "Editor in span should be visible");
+				$chkSpan.click();
+				equal($comboSpan.igCombo("comboWrapper").css("display"), "none", "Editor in span should be invisible");
+				$chkSpan.click();
+				$chkSpan.click();
+				equal($comboSpan.igCombo("comboWrapper").css("display"), "none", "Editor in span should be invisible");
+				$chkInput.click();
 			});
 
 			var testId = 'Test big data';
@@ -732,6 +770,8 @@
 	</div>
 	<div class="clear-floating"></div>
 
+	<div id="bigDataContainer"></div>
+
 	<input id="comboDisabled" data-bind="igCombo: {
 			dataSource: dataNew,
 			width: '200'
@@ -739,7 +779,26 @@
 
 	<input id="chkDisabled" type="checkbox" data-bind="checked: isDisabled"/>
 
-	<div id="bigDataContainer"></div>
+	<div class="test-container">
+		<input id="comboInvisibleInput" data-bind="igCombo: {
+			dataSource: dataObservableItem,
+			width: '150'
+		}, igComboVisible: isVisible" />
+		<span id="comboInvisibleSpan" data-bind="igCombo: {
+			dataSource: dataObservableItem,
+			width: '150'
+		}, igComboVisible: isVisible" />
+		<div id="comboInvisibleDiv" data-bind="igCombo: {
+			dataSource: dataObservableItem,
+			width: '150'
+		}, igComboVisible: isVisible" />	
+	</div>
+
+	<div>
+		<input id="chkInvisibleInput" type="checkbox" data-bind="checked: isVisible"/>
+		<input id="chkInvisibleSpan" type="checkbox" data-bind="checked: isVisible"/>
+		<input id="chkInvisibleDiv" type="checkbox" data-bind="checked: isVisible"/>
+	</div>
 </div>
 </body>
 </html>
