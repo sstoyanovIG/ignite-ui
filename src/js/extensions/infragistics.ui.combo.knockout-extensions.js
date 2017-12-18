@@ -238,7 +238,7 @@
             if (!ko.isObservable(visible)) {
                 return;
             }
-            combo.css("display", visible() ? "inline-block" : "none");
+            combo.igCombo("comboWrapper").css("display", visible() ? "inline-block" : "none");
         }
     };
 
