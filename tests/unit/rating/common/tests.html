@@ -51,6 +51,7 @@
 			value: 0.8,
 			precision: 'whole'
 		});
+		$('#rating10').igRating();
 	});
 	// START TESTING
 	module('igRating Common');
@@ -201,10 +202,22 @@
 					var testId = '[ID3] rating common';
 					test(testId,
 						function() {
+							// rating2 has focus
 							stop();
 							val = rating.igRating('hasFocus');
 							ok(val, 'rating has focus');
 							//QUnit.log(val, testId + ' rating has focus');
+							start();
+
+							var activeElem = rating.find(".ui-igrating-active");
+							ok(activeElem && activeElem.length > 0, "rating2 has active element");
+
+							// switch focus to rating10 to test the blur event fired for the rating2
+							$('#rating10').igRating('focus');
+
+							stop();
+							var activeElem1 = rating.find(".ui-igrating-active");
+							ok(activeElem1 && activeElem1.length === 0, "rating2 doesn't have active element after blur");
 							start();
 						});
 				},
@@ -269,6 +282,14 @@
 			var val = rating.igRating("value");
 			equal(val, 0.5, "rating get value of the widget");
 		});
+
+	module('igRating Common');
+	testId = '[ID7] rating events';
+	test(testId,
+		function() {
+			ok(true);
+	});
+
 </script>
 
 </head>
@@ -290,6 +311,7 @@
 	<div id="rating7"></div>
 	<input id="rating8" value="0.3"></input>
 	<input id="rating9" value="0.3"></input>
+	<div id="rating10"></div>
 </div>
 </body>
 
