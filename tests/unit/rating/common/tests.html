@@ -10,7 +10,6 @@
 <script type="text/javascript" src="../../../../bower_components/jquery-ui/jquery-ui.js"></script>
 <script type="text/javascript" src="../../../../src/js/modules/infragistics.util.js"></script>
 <script type="text/javascript" src="../../../../src/js/modules/infragistics.util.jquery.js"></script>
-<script type="text/javascript" src="../../../../src/js/modules/infragistics.util.jquerydeferred.js"></script>
 <script type="text/javascript" src="../../../../src/js/modules/infragistics.ui.widget.js"></script>
 <script type="text/javascript" src="../../../../src/js/modules/infragistics.ui.rating.js"></script>
 
@@ -212,13 +211,20 @@
 							var activeElem = rating.find(".ui-igrating-active");
 							ok(activeElem && activeElem.length > 0, "rating2 has active element");
 
-							// switch focus to rating10 to test the blur event fired for the rating2
-							$('#rating10').igRating('focus');
+							// get the internal input element of the rating control
+							var inputEl = rating[0].children[0].children[0].children[0];
+							$(inputEl).blur();
 
-							stop();
-							var activeElem1 = rating.find(".ui-igrating-active");
-							ok(activeElem1 && activeElem1.length === 0, "rating2 doesn't have active element after blur");
-							start();
+							setTimeout(function() {
+								var testId = '[ID3.1] rating blur';
+								test(testId,
+									function() {
+										stop();
+										var activeElem1 = rating.find(".ui-igrating-active");
+										ok(activeElem1 && activeElem1.length === 0, "rating2 doesn't have active element after blur");
+										start();
+									});
+							}, 300);
 						});
 				},
 				300);
@@ -284,12 +290,81 @@
 		});
 
 	module('igRating Common');
-	testId = '[ID7] rating events';
+	testId = '[ID7] rating keydown events';
 	test(testId,
 		function() {
-			ok(true);
-	});
+			var rating10 = $('#rating10').igRating({ valueHover: 0.2 });
+			var rating11 = $('#rating11').igRating({ valueHover: 0.6, vertical: true });
+			var kc = $.ui.keyCode;
 
+			// get the internal input element of the rating control
+			var inputEl10 = rating10[0].children[0].children[0].children[0];
+			var inputEl11 = rating11[0].children[0].children[0].children[0];
+
+			// space key down
+			var keyPressSpaceEvt = $.Event('keydown', {which: kc.SPACE, keyCode: kc.SPACE});
+			$(inputEl10).trigger(keyPressSpaceEvt);
+			var val = rating10.igRating('value');
+			equal(val, 0.2, "value should be set to valueHover if Space key is pressed");
+
+			// enter key down
+			var keyPressEnterEvt = $.Event('keydown', {which: kc.ENTER, keyCode: kc.ENTER});
+			$(inputEl11).trigger(keyPressEnterEvt);
+			val = rating11.igRating('value');
+			equal(val, 0.6, "value should be set to valueHover if Enter key is pressed");
+
+			// reset the ratings' values for the following tests
+			rating10.igRating('value', 0.3);
+			rating11.igRating('value', 0.5);
+
+			// home key down
+			var keyPressHomeEvt = $.Event('keydown', {which: kc.HOME, keyCode: kc.HOME});
+			$(inputEl10).trigger(keyPressHomeEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after Home key is pressed");
+
+			// end key down
+			var keyPressEndEvt = $.Event('keydown', {which: kc.END, keyCode: kc.END});
+			$(inputEl10).trigger(keyPressEndEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after End key is pressed");
+
+			// Page Up key down
+			var keyPressPageUpEvt = $.Event('keydown', {which: kc.PAGE_UP, keyCode: kc.PAGE_UP});
+			$(inputEl10).trigger(keyPressPageUpEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after Page Up key is pressed");
+
+			// Page Down key down
+			var keyPressPageDownEvt = $.Event('keydown', {which: kc.PAGE_DOWN, keyCode: kc.PAGE_DOWN});
+			$(inputEl10).trigger(keyPressPageDownEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after Page Down key is pressed");
+
+			// Left key down
+			var keyPressLeftEvt = $.Event('keydown', {which: kc.LEFT, keyCode: kc.LEFT});
+			$(inputEl10).trigger(keyPressLeftEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after Left key is pressed");
+
+			// Right key down
+			var keyPressRightEvt = $.Event('keydown', {which: kc.RIGHT, keyCode: kc.RIGHT});
+			$(inputEl10).trigger(keyPressRightEvt);
+			val = rating10.igRating('value');
+			equal(val, 0.3, "value should be unchanged after Right key is pressed");
+
+			// Up key down
+			var keyPressUpEvt = $.Event('keydown', {which: kc.UP, keyCode: kc.UP});
+			$(inputEl11).trigger(keyPressUpEvt);
+			val = rating11.igRating('value');
+			equal(val, 0.5, "value should be unchanged after Up key is pressed");
+
+			// Down key down
+			var keyPressDownEvt = $.Event('keydown', {which: kc.DOWN, keyCode: kc.DOWN});
+			$(inputEl11).trigger(keyPressDownEvt);
+			val = rating11.igRating('value');
+			equal(val, 0.5, "value should be unchanged after Down key is pressed");
+		});
 </script>
 
 </head>
@@ -312,6 +387,7 @@
 	<input id="rating8" value="0.3"></input>
 	<input id="rating9" value="0.3"></input>
 	<div id="rating10"></div>
+	<div id="rating11"></div>
 </div>
 </body>
 
